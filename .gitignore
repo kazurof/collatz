@@ -1,0 +1,13 @@
+
+
+
+*.class
+
+.idea/
+collatz.iml
+
+
+
+build/
+.gradle/
+
