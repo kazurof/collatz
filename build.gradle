@@ -1,0 +1,45 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+def defaultEncoding = 'UTF-8'
+
+tasks.withType(AbstractCompile) each { it.options.encoding = defaultEncoding }
+
+test {
+  testLogging.showStandardStreams = true
+}
+
+repositories {
+  jcenter()
+}
+
+dependencies {
+  compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.5'
+  compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.5'
+  testCompile 'junit:junit:4.12'
+}
+
+
+task run(type: JavaExec) {
+  def props = loadProperties("$rootDir/src/main/resources/config.properties")
+  main = "collatz.GenerateSequence"
+  classpath = sourceSets.main.runtimeClasspath
+  args(System.properties['start'] ?: "${props.start}")
+}
+
+
+/**
+ * Reads properties from the specified .properties file.
+ * see sample at https://maku77.github.io/gradle/property-file.html
+ */
+def loadProperties(filename) {
+  def props = new Properties()
+  file(filename).withInputStream {
+    props.load(it)
+  }
+  return props
+}
